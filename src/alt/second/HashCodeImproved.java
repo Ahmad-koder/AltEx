@@ -302,37 +302,54 @@ public class HashCodeImproved {
      * @return Псевдослучайное число
      */
     private static long generateRandomNumber() {
-        int[][] automat = new int[64][51];
+
+
+        int [][] automat = new int[64][63];
 
         LocalTime now = LocalTime.now();
         int check = 0;
-        int hour = now.getHour();
+        int hour = now.getNano();
 
-        String bits = Integer.toBinaryString(hour);
+        String bits = Integer.toBinaryString(hour);//Перевод секунд в двоичную форму счисления
 
-        for (int i = 0; i < 51; i++) {
-            if (check != bits.length()) {
+        //Вставляем полученное двоичное число в первую строку автомата
+        for(int i = 0;i < 64; i++) {
+            if(check != bits.length()) {
                 automat[0][i] = Character.getNumericValue(bits.charAt(check++));
-            } else
+            }
+            else
                 break;
         }
 
-        for (int i = 1; i < automat.length; i++) //генерация всех последующих поколений по правилу
-            for (int j = 0; j < automat[i].length; j++) {
+        //генерация всех последующих поколений по правилу
+        for (int i = 1; i < automat.length; i++)
+            for (int j = 0; j < automat[i].length; j++)
+            {
                 int first = (j - 1 + automat[i].length) % automat[i].length;
                 int second = (j + 1 + automat[i].length) % automat[i].length;
 
                 automat[i][j] = automat[i - 1][first] ^ (automat[i - 1][j] | automat[i - 1][second]);
             }
-        int lenghtNumber = 6; //рандомная длина двоичного кода числа
-        int startNumber = ((int) (Math.random() * (64 - lenghtNumber))); //рандомная точка старта в столбце
-        int[] number = new int[lenghtNumber + 1];
-        for (int i = 0; i < lenghtNumber + 1; i++) {
+
+        int lenghtNumber = 7; //рандомная длина двоичного кода числа
+
+        int startNumber = (now.getSecond() + now.getHour()+ now.getMinute()) % (63 - lenghtNumber) ; //рандомная точка старта числа в столбце
+
+
+
+        int [] number = new int [lenghtNumber];
+
+        //Копируем число из центрального столбца автомата
+        for(int i = 0; i < lenghtNumber; i++) {
             number[i] = automat[25][startNumber++];
         }
+
         StringBuilder newNumber = new StringBuilder();
+
+        //образуем строку для удобного перевода
         for (int value : number)
-            newNumber.append(Integer.toString(value)); //образуем строку для удобного перевода
+            newNumber.append(Integer.toString(value));
+
         return Long.parseLong(newNumber.toString(), 2);
     }
 
