@@ -526,8 +526,8 @@ public class HashCodeImproved {
      */
     private static void checkPassword() {
         if (password != null) {
-            if (password.length() < 6 || password.length() > 32) {
-                System.out.println("Неверная длина пароля (от 6 до 32 символов)");
+            if (password.length() < 6 || password.length() > 26) {
+                System.out.println("Неверная длина пароля (от 6 до 26 символов)");
                 error = true;
                 return;
             }
